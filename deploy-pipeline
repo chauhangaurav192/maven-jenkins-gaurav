@@ -1,0 +1,16 @@
+pipeline {
+    agent any
+    stages 
+    {
+        stage('copy artifacts') {
+            steps {
+                copyArtifacts filter: '**/*.war', fingerprintArtifacts: true, projectName: 'build-pipeline', selector: lastSuccessful()
+            }
+        }
+        stage('deploy to container') {
+            steps {
+                deploy adapters: [tomcat9(alternativeDeploymentContext: '', credentialsId: '060bca68-dc56-410b-b1b9-5eff8bc7297c', path: '', url: 'http://35.192.155.126:8090/')], contextPath: null, war: '**/*.war'
+            }
+            }
+    }
+}
